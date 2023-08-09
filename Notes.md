@@ -33,4 +33,44 @@
 - Has only one callstack
 - No running functions in parallel
 - JS is synchronous
-- 
+
+# Javascript Runtime
+- Web API comes with the browser in its Javascript Runtime
+	- `fetch`
+	- `setInterval()`
+	- Implemented by C++ or something similar in the Browser
+	- *Asynchronous*
+- Call Stack will call out to Web API for things like `setTimeout()` and the Web API will handle it in a separate thread/background
+- Response from Web API will add an event to the Event Loop which notifies the Call Stack *once it's free* that there's something in the Callback Queue, and *when it's available will add it to the Call Stack*
+
+```
+Call Stack -> Web API -> Event Loop + Callback Queue -> Call Stack
+```
+
+## Cool Example
+```javascript
+console.log(1)
+setTimeout(() => console.log(2), 0)
+console.log(3)
+
+// will output:
+// 1
+// 3
+// 2
+
+// This execution will happen in this order NO MATTER WHAT time we set in setInterval() because setInterval() is part of the Web API and will only ever be ran AFTER the Call Stack is empty, which won't occur until the Javascript file is completely ran and done!
+```
+
+# NodeJs
+- Javascript *runtime*
+![[Pasted image 20230808094638.png]]
+- Doesn't have `window` but does have `global`, which includes stuff like
+	- `setInterval()`
+- Offers a new type of server model for handling requests
+![[Pasted image 20230808094958.png|400]]
+	- PHP
+		- Used to create a thread for each request
+		- Thread pool (however many reqs the server can accept) can max out
+	- NodeJS
+		- Any req comes in and gets tossed onto it's async runtime
+		- Can handle as many requests as you want

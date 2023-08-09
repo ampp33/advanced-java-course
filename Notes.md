@@ -74,3 +74,16 @@ console.log(3)
 	- NodeJS
 		- Any req comes in and gets tossed onto it's async runtime
 		- Can handle as many requests as you want
+
+# Terms
+`Execution Context` - when the code sees a set of brackets it'll create an execution context, and adds it to the stack.  You have things like `this` and all variables, methods, etc, available in a specific context.
+
+`Lexical Environment` - where something is written/defined
+
+`Lexical Scope` - available data + vars where func was defined determines our available vars.  Not where the function is called (`Dynamic Scope`)
+
+`Hoisting` -  JS engine allocating memory for variables and funcs in creation phase before it executes it (lets you run the `sing()` method before it's actually been defined in the file, like right before the function is defined).  Variables are undefined initially (partially hoisted), but functions actually get defined (fully hoisted).  The first thing the engine has to see is `var` or `function` it'll hoist(NO OTHER TERMS), but if you wrap methods in parenthesis or use something like `const` it won't get hoisted.  *This occurs every time we create a function!*
+
+`Function Expression` - `const thing = function() {}`
+
+`Function Declaration` - `function blan() {}`

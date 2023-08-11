@@ -107,6 +107,8 @@ console.log(3)
 
 `scope` is a function based thing, `context` is more about objects (ex: what's the value of the `this` var?).  `context` relates to how and who calls a function, while `scope` relates to the visibility of the variables.
 
+`let` - lets you use block scoping
+
 ## call()
 `a()` is the same as `a.call()`, all functions have `call()` implicitly added... However, `call()` calls a method of an object, substituting another object for the current object.
 
@@ -178,7 +180,9 @@ JS has a heavy hand in this because it's dynamically typed, and JS tries to help
 `==` - compare with type coercion (don't use this, it's confusing)
 `===` - compare without coercion
 
-# The Two Pillars (Closures and Protypal Inheritance)
+# The Two Pillars (Closures and Prototypal Inheritance)
+Presenter thinks `Closures` and `Prototypes` give you superpowers in JS
+
 ## Functions are objects
 JS under the hood creates a "callable object"
 
@@ -211,4 +215,84 @@ blah = {
 ### Things to watch out for
 - Init functions in loops
 - Good to set default params on a function to avoid edge cases
+## Closures
+We get these because `functions` are first class citizens and `lexical scope`
 
+Example:
+```js
+function a() {
+	const grandpa = 'grandpa'
+	return function b() {
+		const father = 'father'
+		return function c() {
+			const son = 'son'
+			console.log(`${grandpa} > ${father} > ${son}`)
+		}
+	}
+}
+
+const one = a()
+
+// the fact that the b() function has access to the 'grandpa' variable even tho a() is off the stack (and its variables), THAT is a closure, the extended scope that something preserves.
+
+// grandpa goes up into the 'closure box', aka the heap, and the gc won't clean it up because it's inside a closure (and is still referenced)
+
+// c() will look inside the closure box to find the variables it's looking for
+```
+
+- Closures are a feature of JS
+- Use `lexical scoping / statically scoped`
+- Even Web API calls still can access closure data
+
+Weird Scenario
+```js
+function doStuff() {
+	setTimeout(function() {
+		console.log(stuff)
+	}, 4000)
+	const stuff = 'hey'
+}
+
+doStuff() // will print 'hey' after 4 seconds, because the closure still keeps that var because it sees that it's referenced, and the Web API calls out for it
+```
+
+### Main Benefits of Closures
+1. Memory efficient
+
+```js
+function bigDatabaseOperation() {
+	const data = [1,2,3] // pretend this is some super heavy db call
+	return function(index) {
+		return data[index]
+	}
+}
+
+const bigData = bigDatabaseOperation()
+bigData(2) // can use this instead of hitting the database each time
+// this also avoids storing the data somewhere in a storage object or polluting the global scope
+```
+
+2. Encapsulation
+You can store data inside of a function/object and it can maintain state + have functions you can expose to interact with that data.
+
+```js
+function basicallyAClass() {
+	let value = 0
+	// return public methods and data (expose only what you want)
+	return {
+		inc: () => value++,
+		getVal: () => value,
+		reset: () => value = 0
+	}
+}
+
+const counter = basicallyAClass()
+
+counter.inc()
+console.log(counter.getVal()) // 1
+counter.inc()
+counter.inc()
+console.log(counter.getVal()) // 3
+counter.reset()
+console.log(counter.getVal()) // 0
+```

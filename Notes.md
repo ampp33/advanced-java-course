@@ -296,3 +296,42 @@ console.log(counter.getVal()) // 3
 counter.reset()
 console.log(counter.getVal()) // 0
 ```
+
+## Prototypes
+JS uses *prototypal inheritance* for creating objects
+
+Use the `__proto__` property of the object to look up the chain of objects.
+
+```
+object (instance) __proto__
+-->
+object type __proto__
+-->
+parent object type __proto__
+```
+
+Applying a prototype to an object
+
+```js
+const animal = {
+	age: 1,
+	breathe() => console.log('whew!')
+}
+
+const dog = {
+	bark() => console.log('woof!'),
+	breathe() => console.log('pant!')
+}
+
+// this makes the dog 'extend' animal, tho the properties in 'dog' won't get overwritten (like breath())
+dog.__proto__ = animal
+dog.age // 1
+dog.breathe() // pant!
+```
+
+This is basically just inheritance, except that the base "objects" are prototype objects
+
+Saves memory if you have lots of the same object, since the methods all share the same method in memory.
+
+Don't use `__proto__` though, it's bad for performance and there's better ways to inherit (in OO section of course)
+

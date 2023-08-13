@@ -335,3 +335,26 @@ Saves memory if you have lots of the same object, since the methods all share th
 
 Don't use `__proto__` though, it's bad for performance and there's better ways to inherit (in OO section of course)
 
+Only `functions` have the `prototype` and `__proto__` attributes (except the base `Object`, that has it too - since it's a type of `Function`), and are *always* a function
+- don't really use the `prototype` on the actual object, but really only use them when using constructor `Functions`
+
+`__proto__` points toward the `prototype` object on the type we inherited from.  The current function will also have its own `prototype` object
+
+`Object` is a `Function`, `Object` is a constructor that creates the object wrapper
+
+`Object` can be used to create `{}` (`Object.prototype`), which `Object` updates with all the variables and whatnot that it needs
+- When you create one of these objects it creates it from the `prototype`
+
+Prototypes avoid us repeating ourselves (duplicating functions in memory)
+
+## Scheme + Java
+JS was inspired by these two languages
+
+`Scheme` - created at MIT in the 70s, one of the first languages to have closures
+- functional
+- had functions as first class citizens
+`Java` - was trendiest at the time
+- classes were important and OO
+
+# Object Oriented Programming
+Programming Paradigm

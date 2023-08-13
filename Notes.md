@@ -335,6 +335,7 @@ Saves memory if you have lots of the same object, since the methods all share th
 
 Don't use `__proto__` though, it's bad for performance and there's better ways to inherit (in OO section of course)
 
+<<<<<<< HEAD
 Only `functions` have the `prototype` and `__proto__` attributes (except the base `Object`, that has it too - since it's a type of `Function`), and are *always* a function
 - don't really use the `prototype` on the actual object, but really only use them when using constructor `Functions`
 
@@ -357,4 +358,28 @@ JS was inspired by these two languages
 - classes were important and OO
 
 # Object Oriented Programming
-Programming Paradigm
+Programming Paradigm - make code easier to reason about
+Bringing data and its behavior in a single location (object) makes it easier to understand
+Like building a robot (a head, arm, legs, etc and you build all that together)
+*Prototypes*
+
+Data == State
+Methods == Actions (manipulate state)
+
+Paradigms
+- more clear and understandable
+- easy to extend (easier for more devs and as program expands)
+- easy to maintain
+- memory effecient
+- DRY (do not repeat yourself)
+
+Lets us make complex code more organized
+
+Two main things in programming
+- data
+- behavior
+
+# Functional Programming
+Data and behavior are distinctive things and should be kept apart for clarity
+Give me data and functions, and I'll return something from that processed data (pipe)
+*Closures*

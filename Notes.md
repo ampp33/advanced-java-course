@@ -335,3 +335,29 @@ Saves memory if you have lots of the same object, since the methods all share th
 
 Don't use `__proto__` though, it's bad for performance and there's better ways to inherit (in OO section of course)
 
+# Object Oriented Programming
+Programming Paradigm - make code easier to reason about
+Bringing data and its behavior in a single location (object) makes it easier to understand
+Like building a robot (a head, arm, legs, etc and you build all that together)
+*Prototypes*
+
+Data == State
+Methods == Actions (manipulate state)
+
+Paradigms
+- more clear and understandable
+- easy to extend (easier for more devs and as program expands)
+- easy to maintain
+- memory effecient
+- DRY (do not repeat yourself)
+
+Lets us make complex code more organized
+
+Two main things in programming
+- data
+- behavior
+
+# Functional Programming
+Data and behavior are distinctive things and should be kept apart for clarity
+Give me data and functions, and I'll return something from that processed data (pipe)
+*Closures*

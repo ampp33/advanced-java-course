@@ -379,6 +379,87 @@ Two main things in programming
 - data
 - behavior
 
+## Factory Functions
+Example
+```js
+function createCar(name, manu) {
+	return {
+		name,
+		manu,
+		drive: () => console.log('vroooooom')
+	}
+}
+
+const ferrari = createCar('fastcar', 'ferrari')
+const mustang = createCar('mustang', 'ford')
+```
+
+
+*Shortcoming*: you'd have to create the `drive()` function for each car, that's lot of extra memory with no benefit.  Solution: *prototypal inheritance*, but we have other solutions we can use too:
+
+```js
+const carFunctions = {
+	drive: () => console.log('vroooooom')
+}
+
+function createCar(name, manu) {
+	return {
+		name,
+		manu
+	}
+}
+
+const ferrari = createCar('fastcar', 'ferrari')
+ferrari.drive = carFunctions.drive
+const mustang = createCar('mustang', 'ford')
+mustang.drive = carFunctions.drive
+```
+
+That's a lot of work though, and and lot of extra code.  Instead we can use...
+`Object.create()`
+- Creates a *link* between what's passed in and the new attributes you attached to the generated object.  This uses prototypal inheritance for us (creates the `__proto__` chain for us)
+
+```js
+const carFunctions = {
+	drive: () => console.log('vroooooom')
+}
+
+function createCar(name, manu) {
+	const car = Object.create(carFunctions)
+	car.name = name
+	car.manu = manu
+	return car
+}
+
+const ferrari = createCar('fastcar', 'ferrari')
+const mustang = createCar('mustang', 'ford')
+```
+
+This is true prototypal inheritance, however you won't see devs doing this (it's kinda non-standard for the community).
+
+What was available in the beginning before `Object.create()`: *Constructor functions*, and using `new`, which changes how `this` works in the created object, and returns the newly created object!  Because we're using a `function` here, it means our obj will get the `prototype` property.  Normally this is useless with regular functions, but with *constructor functions* we can finally use that `prototype` to add functions to the obj!
+
+```js
+function Car(name, manu) { // note the use of a capital letter, that tells you to use 'new'
+	this.name = name
+	this.manu = manu
+}
+Car.prototype.drive = function() { console.log(`${this.name} goes vrooooom`) } // single location in memory
+const mustang = new Car('mustang', 'ford') // constructor function
+```
+
+**NOTE: arrow functions are lexically scoped, but `function` is dynamically scoped**
+
+A lot of people don't like the `new` keyword though lol
+
+Using the native contructor function:
+
+```js
+const Car = new Function('name', 'manu', `this.name = name; this.manu = manu`)
+const mustang = new Car('mustang', 'ford')
+```
+
+
 # Functional Programming
 Data and behavior are distinctive things and should be kept apart for clarity
 Give me data and functions, and I'll return something from that processed data (pipe)

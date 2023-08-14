@@ -241,7 +241,7 @@ const one = a()
 ```
 
 - Closures are a feature of JS
-- Use `lexical scoping / statically scoped`
+- **IMPORTANT** Use `lexical scoping / statically scoped`
 - Even Web API calls still can access closure data
 
 Weird Scenario
@@ -335,7 +335,6 @@ Saves memory if you have lots of the same object, since the methods all share th
 
 Don't use `__proto__` though, it's bad for performance and there's better ways to inherit (in OO section of course)
 
-<<<<<<< HEAD
 Only `functions` have the `prototype` and `__proto__` attributes (except the base `Object`, that has it too - since it's a type of `Function`), and are *always* a function
 - don't really use the `prototype` on the actual object, but really only use them when using constructor `Functions`
 
@@ -380,6 +379,7 @@ Two main things in programming
 - behavior
 
 ## Factory Functions
+
 Example
 ```js
 function createCar(name, manu) {
@@ -437,7 +437,12 @@ const mustang = createCar('mustang', 'ford')
 
 This is true prototypal inheritance, however you won't see devs doing this (it's kinda non-standard for the community).
 
+## Constructor Functions
+
 What was available in the beginning before `Object.create()`: *Constructor functions*, and using `new`, which changes how `this` works in the created object, and returns the newly created object!  Because we're using a `function` here, it means our obj will get the `prototype` property.  Normally this is useless with regular functions, but with *constructor functions* we can finally use that `prototype` to add functions to the obj!
+
+Also worth noting that the `prototype` that's created by the `new` keyword will contain all the stuff in the constructor function.
+
 
 ```js
 function Car(name, manu) { // note the use of a capital letter, that tells you to use 'new'
@@ -458,6 +463,43 @@ Using the native contructor function:
 const Car = new Function('name', 'manu', `this.name = name; this.manu = manu`)
 const mustang = new Car('mustang', 'ford')
 ```
+
+`__proto__` and `prototype` of Constructor objects
+
+```js
+function Dude() {}
+const dude = new Dude()
+dude.__proto__ // Dude prototype
+dude.prototype // undefined, because see next line, and only functions have access to the prototype object
+console.log(typeof dude) // object
+```
+
+A quick *gotcha*...
+
+```js
+function Dude() {}
+Dude.prototype.build = function() {
+	console.log(this) // this == dude obj
+	function building() {
+		console.log(this) // this == Window, can avoid bad this by grabbing this from outside the function
+	}
+	building()
+}
+```
+
+This gotcha occurs because it's a function inside of functions/methods, so it gets the `window`
+
+*ES6* introduced `classes`, but they are just syntactic sugar, we're still using prototypes.  It wasn't given classes originally because Brendan was told not to make it too much like Java.  Fark.
+
+JS has the `instanceof` keyword!
+
+## this - 4 ways
+1. `new` and the constructor function (refers to the object you're creating)
+2. implicit binding - when creating an `{}` you can use `this` which will refer to the object you're creating
+3. explicit binding - calling the `bind()` function on the function to specify exactly which `this` you want it to refer to
+4. arrow functions - `this` is lexically scoped, as opposed to dynamic scoping like everything else
+
+## Inheritance
 
 
 # Functional Programming

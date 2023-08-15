@@ -614,3 +614,165 @@ Makes functions very easy to test, compose, and avoids bugs!  Makes them more pr
 `Immutability` - not changing the data/state
 - It's okay to create temp variables inside functions, as long as we don't change state on any passed in objects.  Nice!
 - *"This doesn't seem very memory efficient"* - structural sharing, something a lot of fp places implement - only the changes to the state will get copied, the stuff that doesn't change is kept in place.
+
+## Higher Order Functions and Closures Again
+`HOF` - takes one or more functions as args, or returns a function (callback)
+
+```js
+const hof = (a) => (fn) => fn(a)
+hof(2)((a) => a*2) // 2
+```
+
+`Closures` - creating a function/object that relies on external scope that continues to maintain state as long as the function/object exists.  Modifying state outside your function.  *Can still use closures in FP, and only make the the function impure if we modify the the closure data (returning it is fine, and effectively gives us the power of private variables)*.  Closures get used in FP for this purpose a lot.
+
+```js
+function closure() {
+	let count = 0
+	return function inc() {
+		return ++count
+	}
+}
+const obj = closure()
+obj.inc()
+```
+
+## Currying
+Translating the eval of a function that takes a sequence of params, into eval a sequence of functions, each with a single argument.
+
+Can now create multiple utility functions with this tool.
+
+## Partial Application
+*Different than currying*
+
+Producing a function with a smaller number of parameters - taking a func and apply *some* of the params and supply the rest later.
+
+```js
+const multiply = (a) => (b) => (c) => a*b*c
+multiply(a)(b)(c) // currying
+
+const multiply = (a,b,c) => a*b*c
+const partialMultiplyBy5 = multiply.bind(null, 5)
+partialMultiplyBy5(2,3) // partial application, 30
+```
+
+## Memoization
+*Caching*, storing values so you can use them later on.  Holding data in a specific box.
+
+```js
+function addTo80(n) {
+	return n + 80
+}
+addTo80(5) // 85 - no matter how many times we run this function it'll always return this value
+
+// what if that function takes a long time though/is taxing?  Let's add memoization!
+let cache = {}
+function memoizedAddTo80(n) {
+	if(n in cache) return cache[n]
+	cache[n] = n + 80
+	return cache[n]
+}
+memoizedAddTo80(5) // returns 85, but FASTER because it's cached
+
+// that's impure as hell, and we can put the cache inside inside another function to avoid polluting global scope (closures) but it's still impure
+```
+
+## Compose and Pipe
+`Compose` - any data transformation we do should be obvious
+- System design principle, letting components be assembled and moved around as needed
+
+```js
+// abs(-50 * 3)
+// compose() doesn't exist, but you can use Ramda to get it.  For now we'll build our own!
+// const multiplyBy3AndAbs = compose(multiplyBy3, makePositive)
+
+const compose = (f,g) => (data) => f(g(data))
+const multiplyBy3AndAbs = compose((a) => a*3, Math.abs) // we created our assembly line!
+multiplyBy3AndAbs(-50) // 150
+```
+
+`Pipe` - same as `Compose`, except it goes left to right, instead of right to left (changes order of functions executed)
+
+```js
+const compose = (f,g) => (data) => g(f(data)) // note the change of method order
+```
+
+## Arity
+The number of arguments a function takes
+
+In FP, this isn't a solid rule, but the fewer params the easier it is to use the function (makes them more flexible)
+
+## Is FP The Answer To Everything?
+No, because of its answer it makes distributed and parallel things much easier to work with, but *it depends what your problem is*.  When there's clear data transformation then it can make sense.
+
+## Amazon Problem Revisited
+### My Second Attempt
+```js
+const user = {
+    name: 'Kim',
+    active: true,
+    cart: [],
+    purchases: []
+}
+
+const item = {
+    name: 'donut',
+    cost: 1.00
+}
+
+function addItemToCart(user, item) {
+    return {
+        ...user,
+        cart: [ ...user.cart, item ]
+    }
+}
+
+function addTaxOnCart(user) {
+    return {
+        ...user,
+        cart: user.cart.map(item => { return { ...item, cost: item.cost * 1.03 } })
+    }
+}
+
+function buyItems(user) {
+    return {
+        ...user,
+        cart: [],
+        purchases: [ ...user.cart ]
+    }
+}
+
+function emptyCart(user) {
+    return {
+        ...user,
+        cart: []
+    }
+}
+
+// could also use `reduce` to create a pipe function!
+function pipe(...funcs) {
+	return function(data) {
+		let result = data
+		for(const func of funcs) {
+			result = func(result)
+		}
+		return result
+	}
+}
+
+const curriedAddItemToCart => (user) => (item) => addItemToCart(user, item)
+
+const addToCart = curriedAddItemToCart(user)
+const purchaseItem = pipe(addToCart, addTaxOnCart, buyItems /*, emptyCart*/)
+
+purchaseItem(item)
+
+// could track the history of these actions by adding the updated user object to a history [] array as each method is called, tho this is impure as hell lol (but is very useful tho).  According to the presenter this is kinda okay, since we can't always be completely pure :)
+```
+
+```js
+// simplified pipe function
+const runPipe = (f,g) => (...args) => g(f(...args))
+const pipe = (...funcs) => funcs.reduce(runPipe)
+```
+
+# OOP vs FPS

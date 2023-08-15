@@ -501,8 +501,116 @@ JS has the `instanceof` keyword!
 
 ## Inheritance
 
+```js
+class Mustang extends Car {}
+```
 
+Still uses prototypal inheritance behind the scenes, we still have the `__proto__` chain!  This uses efficient linking to only define our classes and methods.
+
+## 4 Pillars of OOP
+1. *Encapsulation* - containing data and functions relevant to their objects.  wrapping code that's related
+2. *Abstraction* - hiding the complexity from the user, creating simpler interfaces
+3. *Inheritance*
+4. *Polymorphism* - call a method with different classes and getting diff behavior depending on the class/type
 # Functional Programming
 Data and behavior are distinctive things and should be kept apart for clarity
 Give me data and functions, and I'll return something from that processed data (pipe)
+*All about separation of concerns*
+*Separate data and functions*
+*Emphasis on simplicity with data and functions*
 *Closures*
+
+Originates from Lambda Calculus - Math
+
+Work really well with distributed computing and parallelization
+
+Has a lot of restraints
+## 1 Pillar
+- Pure Functions
+	- All objects are immutable, objects cannot be changed
+
+## Exercise: Amazon
+## First Attempt
+```js
+const user = {
+    name: 'Kim',
+    active: true,
+    cart: [],
+    purchases: []
+}
+
+const item = {
+    name: 'donut',
+    cost: 1.00
+}
+
+function addItemToCart(user, item) {
+    return {
+        ...user,
+        cart: [ ...user.cart, item ]
+    }
+}
+
+function addTaxOnCart(user) {
+    return {
+        ...user,
+        cart: user.cart.map(item => { return { ...item, cost: item.cost * 1.03 } })
+    }
+}
+
+function buyItems(user) {
+    return {
+        ...user,
+        cart: [],
+        purchases: [ ...user.cart ]
+    }
+}
+
+function emptyCart(user) {
+    return {
+        ...user,
+        cart: []
+    }
+}
+
+function purchaseItem(user, item) {
+    return buyItems(addTaxOnCart(addItemToCart(user, item)))
+}
+
+purchaseItem(user, item)
+```
+
+## Pure Functions
+- Always return the same output given the same input
+- Cannot modify anything except itself (no side effects)
+- *Referential Transparency* - the ability to replace a function call with it's returned value, it won't affect functionality (ex: `(function(a,b) { return a + b })(1,2)` replaced with `3`)
+- A perfect function do one thing and one thing only, and should have a return statement
+
+*Should also be the following*:
+1. Predictable
+2. 1 Task
+3. return statement
+4. Pure
+5. No shared state
+6. Immutable state
+7. Composable
+
+Makes functions very easy to test, compose, and avoids bugs!  Makes them more predicable?
+
+*The goal of functional programming is not to make everything pure, it's to minimize side-effects*
+- Organize your code to keep pure functions and non-pure functions segregated so your code is more predictable and easy to debug
+- Purity is a confidence level, and it's okay to have non-pure stuff
+
+## Terms
+`Idempotent` - Function that always returns and does what we expect it to do.  Same result even after multiple calls.  (ex: deleting a user from a db, even after the user was deleted all following delete requests will still return the same result).  This is important, especially for parallel and high thruput computations
+`Imperative vs Declarative`
+- `Imperative` - tells machine what to do and how to do it (computer is better at this - machine code) (higher level code is more `declarative` - we don't say where to store the memory, etc)
+- `Declarative` - what to do and what should happen (not how to do things) (humans are better at this - ex: 'hey give me that water', they don't have to tell them all the actual actions to make)
+	- Foreach is more declarative than using a for loop :eyeroll:
+	- jQuery is more declarative compared to more modern frameworks, modern frameworks are more abstract
+	- *Functional programming wants to be declarative*
+	- Breaks down to be `imperative` in the end!
+	- *The goal is to go a step higher and make things easier to read* (oh hell)
+`Immutability` - not changing the data/state
+- It's okay to create temp variables inside functions, as long as we don't change state on any passed in objects.  Nice!
+- *"This doesn't seem very memory efficient"* - structural sharing, something a lot of fp places implement - only the changes to the state will get copied, the stuff that doesn't change is kept in place.

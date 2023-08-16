@@ -776,3 +776,69 @@ const pipe = (...funcs) => funcs.reduce(runPipe)
 ```
 
 # OOP vs FPS
+## Composition vs. Inheritance
+`Composition` - `compose` and `pipe`, smaller pieces to create something bigger
+- "what it has"
+`Inheritance` - extending classes
+- "what it is" - these classes will have these props and methods
+- *Problems*
+	- With inheritance there can be *tight coupling* - opposite of reusable modular code - can have rippling effects - and can be both good or bad, depending on what you want
+	- *Fragile base class* problem - don't want to mess with base class because it can cause a huge effect if you touch it, so you have to be careful
+	- *Hierarchy* - what if things change?  Hierarchy can get confusing or weird to manage (this one seems pretty bogus, for the most part)
+	- *Gorilla and banana problem* - "I just want a banana, but instead you get a gorilla holding the banana, and the entire jungle under him" - the idea is that sometimes a subclass can inherit TOO MUCH and thus it's given more functionality than you actually need
+		- Sounds like this can be handled by interfaces vs subclasses
+
+Can do both things in both OOP and FP, but diff paradigms have specific focuses
+
+The debate over these two is pretty large, and a lot of people seem to favor `Composition` over `Inheritance`
+
+Problems in Inheritance, and how Composition can fix it
+- Remove all the methods
+
+```js
+// inheritance ("what it is")
+class Character {
+	attack() {}
+}
+class Elf extends Character {
+	constructor(name, weapon) {}
+}
+
+// composition ("what it does")
+// smaller pieces that are combined to create something bigger
+function giveAttackAbility(character) {
+	return {
+		...character,
+		attack() {}
+	}
+}
+function Elf(name, weapon) {
+	let elf = {
+		name,
+		weapon
+	}
+	// add ability, rather than basing this off "what an elf is"
+	elf = giveAttackAbility(elf)
+	return elf
+}
+```
+
+## OOP vs FP
+Pros and Cons of Each
+1. Functional
+	1. Many operations where data is fixed
+	2. State is immutable
+	3. Functions are pure (lol or we try) - this is making it more popular, because we can run things in parallel on multiple machines, which we can't do as much with OOPs
+	4. Declarative (what we want to be doing)
+	5. Good at processing large data for applications
+2. OOP
+	1. Few operations on common data
+	2. State is modifiable
+	3. There are side effects
+	4. Imperative (how we want it done)
+	5. Good if you have few operations
+
+# Async Javascript
+Functions we can execute later
+
+## Promises

@@ -180,6 +180,58 @@ JS has a heavy hand in this because it's dynamically typed, and JS tries to help
 `==` - compare with type coercion (don't use this, it's confusing)
 `===` - compare without coercion
 
+## Dynamic vs. Static Typing
+`let name = 'kevin'` vs `String name = "kevin"`
+- Dynamic
+	- Spend less time describing types, saves dev time
+	- More flexible
+	- "Sure it can have more runtime errors, but you should have written more tests!"
+- Static
+	- More time writing/describing types, but you have less type errors!
+	- Less flexible
+	- "Will have less runtime errors, but could make you overconfident and write less tests"
+	- Self documenting code (can see types being used)
+	- Easier for new people to understand your code
+
+## Static Typing In JS
+- Multiple tools you can use for this
+	- Flow (created by FB)
+		- Translated via Babel
+		- Produces JS
+		- Static type checker
+		- Add `//@flow` to top of files to have it know whether or not to check files
+	- Elm
+		- Translated via Elm
+		- Produces JS
+		- Own compiler
+		- Same as ReasonML
+	- ReasonML (created by FB) (based on a language called Okamel?)
+		- Translated via ReasonML
+		- Produces JS
+		- Own compiler
+		- Diff between Reason and TS - Reason is a totally separate language from JS
+		- Doesn't depend on any JS changes being made
+	- Typescript (Microsoft)
+		- Translated via TS
+		- Produces JS
+		- Differs from Flow because it has its own compiler (Flow uses Babel)
+		- Superset of JS (add functionality on top of JS)
+		- *Growth outweighs growth of all the other tools*
+		- Angular uses this
+		- React is also starting to use this, and most of the JS community
+		- Even more loved than JS according to StackOverflow
+## Weakly vs Strongly Typed
+JS is `dynamic` and `weakly` typed
+```js
+let a = 'hello'
+a + 17 // hello17 (type coersion) (can't do this in a strongly typed language like Python...)
+```
+
+```python
+a = 'hello'
+a + 17 # this would error
+```
+
 # The Two Pillars (Closures and Prototypal Inheritance)
 Presenter thinks `Closures` and `Prototypes` give you superpowers in JS
 
@@ -1218,4 +1270,41 @@ new ReferenceError()
 ```
 
 ## Try/Catch
-Use `try/catch` to catch and handle errors, same as Java, for the most part
+Use `try/catch/finally` to catch and handle errors, same as Java, for the most part
+
+## Async Error Handling
+## Promise `catch()`
+
+*Big gotcha*:
+
+```js
+Promise.resolve('asdf')
+	.then(res => {
+		// GOTCHA: this silently fails (tho Chrome notices it)!
+		// Different runtimes will have different results tho, so be careful
+		throw new Error('woah')
+		return res
+	})
+	.then(res => {
+		console.log(res)
+	})
+```
+
+*Solution*: always add a `catch()` block
+
+You can also continue the promise chain, if you want, if you've caught the error (ex: you could have another `then()` after that if the `catch()` returned something)!
+
+## `async/await`
+- Lets us use `try/catch` when we use `async/await`
+
+## Extending Errors
+`Error` is an object we can extend and use as a throwable error.  Just like Java!
+
+```js
+class CoolError extends Error {
+	constructor(message) {
+		super(message)
+		this.name = 'CoolError' // necessary?
+	}
+}
+```
